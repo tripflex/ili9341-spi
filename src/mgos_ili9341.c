@@ -25,6 +25,13 @@
 #include "mgos_ili9341_font.h"
 
 #define SPI_MODE    0
+#define MADCTL_MY  0x80     ///< Bottom to top
+#define MADCTL_MX  0x40     ///< Right to left
+#define MADCTL_MV  0x20     ///< Reverse Mode
+#define MADCTL_ML  0x10     ///< LCD refresh Bottom to top
+#define MADCTL_RGB 0x00     ///< Red-Green-Blue pixel order
+#define MADCTL_BGR 0x08     ///< Blue-Green-Red pixel order
+#define MADCTL_MH  0x04     ///< LCD refresh right to left
 
 struct ili9341_window {
   uint16_t x0;
@@ -148,7 +155,8 @@ static void ili9341_set_orientation(uint8_t flags) {
   }
 
   if (flags & ILI9341_SWITCH_XY) {
-    madctl |= 1 << 5;
+    // madctl |= 1 << 5;
+    madctl = (MADCTL_MX | MADCTL_MY | MADCTL_MV | MADCTL_BGR);
   }
   ili9341_spi_write8_cmd(ILI9341_MADCTL);
   ili9341_spi_write8(madctl);
